@@ -18,6 +18,11 @@ The project uses chunk-based processing to ensure that memory usage stays below 
 1. **PHP**: Make sure you have PHP 8.2 installed 
 2. **Composer**: Install Composer for dependency management.
 3. **Symfony CLI**: Install Symfony 7.2 CLI to manage the Symfony server.
+4. **C++ Compiler**: Ensure `g++` or any modern C++ compiler is installed.
+5. **FFTW3 Library**: Install the FFTW3 library for performing Fourier Transform:
+   ```bash
+   sudo apt-get install libfftw3-dev
+   ```
 
 ### Installation
 1. Clone the repository:
@@ -38,6 +43,52 @@ The project uses chunk-based processing to ensure that memory usage stays below 
    ```
 
 ---
+
+### C++ Program Details
+
+The Fourier Transform calculation in this project leverages a C++ implementation 
+due to the lack of a robust and memory-efficient Fourier Transform library in PHP. 
+This solution ensures optimal performance and scalability, particularly for large data files, by using the `libfftw3` library in the C++ programs.
+
+
+#### File Difference (`file_diff`)
+- **Purpose**: Perform a bitwise XOR operation between two binary files.
+- **Input**:
+  - `file1`: First file path.
+  - `file2`: Second file path.
+  - `outputFile`: Path to store the difference file.
+  - `chunkSizeKB` (optional): Chunk size for processing (default: 64 KB).
+- **Command**:
+  ```bash
+  ./file_diff <file1> <file2> <outputFile> [chunkSizeKB]
+  ```
+
+---
+
+#### Fourier Transform (`fftlib`)
+- **Purpose**: Perform a Fourier Transform on the binary difference file.
+- **Input**:
+  - `inputFilePath`: Path to the binary difference file.
+  - `outputFilePath`: Path to store the frequency results.
+  - `chunkSizeKB` (optional): Chunk size for processing (default: 64 KB).
+- **Command**:
+  ```bash
+  ./fftlib <inputFilePath> <outputFilePath> [chunkSizeKB]
+  ```
+
+---
+
+#### Makefile
+The `Makefile` is used to compile the programs:
+
+```makefile
+make
+
+make clean
+```
+
+Ensure `libfftw3-dev` is installed before compiling the programs.
+```
 
 ## Running the Symfony Project
 
