@@ -77,9 +77,12 @@ INNER JOIN (
     GROUP BY user_id
 ) ua2 ON ua1.user_id = ua2.user_id AND ua1.ts = ua2.latest_ts;
 
-```bash
+```
 
 ### Example Output:
+```bash
+
+
 user_id download_id     ts                      rev     source_app      server
 123456  6003932         2024-08-26 01:02:20     1       app3    user@host1
 234567  9400696         2022-01-31 09:50:04     0       app1    user@host1
