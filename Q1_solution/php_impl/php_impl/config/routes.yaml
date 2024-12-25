@@ -1,0 +1,16 @@
+controllers:
+    resource:
+        path: ../src/Controller/File/
+        namespace: App\Controller\File
+    type: attribute
+
+
+process_files:
+    path: /process-files
+    controller: App\Controller\File\FileController::process
+    methods: POST
+
+process_files_fourier:
+    path: /process-files-fourier
+    controller: App\Controller\File\FourierTransformController::processFourier
+    methods: POST
