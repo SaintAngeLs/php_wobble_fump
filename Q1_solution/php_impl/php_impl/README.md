@@ -171,36 +171,84 @@ $$
 
 ---
 
-### Why Was Memory Usage Around 4 MB?
+## Efficient Processing of Large Files
 
-Although theoretically $M = 64 \, \text{KB}$ leads to minimal memory usage, the profiler report shows peak memory usage of approximately 4 MB. The reasons are:
-
-1. **System Buffers and Additional Variables**:
-   The constant $C$ includes not only the management of chunks but also internal buffers allocated by the PHP interpreter and the operating system.
-
-2. **Memory Management in PHP**:
-   PHP allocates memory in blocks. The default block size is typically a few megabytes. When a block is allocated, its entire space counts towards memory usage, even if only part of it is used.
-
-3. **Additional Allocations During I/O Operations**:
-   I/O operations on large files may cause temporary buffer allocations by the PHP library or the operating system.
-
-4. **Memory Management in FFT Process**:
-   The FFT operation on the resulting files requires dynamic memory allocation, further increasing $C$.
+### Overview
+When processing large files, memory efficiency and execution speed are critical considerations. Depending on the file size, different approaches are used to achieve optimal performance:
 
 ---
 
-### Summary:
+### Small Files (<50 MB)
+- **Processing Strategy**: 
+  - PHP processes files chunk-by-chunk, dividing them into manageable pieces (e.g., 64 KB).
+  - This approach minimizes memory usage by loading only small parts of the file into memory at any time.
+- **Advantages**:
+  - Simple to implement with native PHP functionality.
+  - Effective for files within the memory threshold.
+- **Memory Usage**:
+  - Memory required is proportional to the chunk size. For a chunk size of 64 KB:
+    - Memory Usage = `3M + C`, where `M` is the chunk size and `C` is a small constant for overhead.
+  - Example:
+    - For `M = 64 KB`, memory usage is approximately 200 KB.
+
+---
+
+### Large Files (>50 MB)
+- **Processing Strategy**:
+  - Large files are processed using a C++ program that leverages efficient system calls for file handling.
+  - Files are still processed in chunks, but the operation is offloaded to the C++ program to reduce memory overhead.
+- **Advantages**:
+  - Efficient handling of large files without consuming excessive PHP memory.
+  - Offloading to C++ ensures optimized I/O operations and faster execution.
+- **Trade-offs**:
+  - Increases the number of I/O operations due to chunk-based processing.
+  - Reduces the overall memory usage for storing chunks and cumulative memory requirements.
+- **Memory Usage**:
+  - Memory usage depends on the size of the buffer in the C++ program.
+  - Example:
+    - For a chunk size of 64 KB, memory usage is typically limited to a few hundred KB for the active buffers.
+
+---
+
+### Why Was Memory Usage Around 4 MB?
+
+While the theoretical memory usage for chunk-based processing is minimal, real-world observations show memory peaks around 4 MB. Key factors include:
+
+1. **System Buffers and Additional Variables**:
+   - PHP and the operating system allocate additional buffers for managing I/O operations.
+   - These buffers, along with auxiliary variables, contribute to the total memory footprint.
+
+2. **Memory Management in PHP**:
+   - PHP allocates memory in blocks. Even if a small portion of the block is used, the entire block contributes to the memory usage reported by the profiler.
+
+3. **Additional Allocations During I/O Operations**:
+   - Temporary buffers are created by PHP and the OS for reading and writing files.
+
+4. **Memory Management in FFT Process**:
+   - Fourier Transform operations involve dynamic memory allocation, especially when processing data in the frequency domain.
+
+---
+
+### Summary
 1. **Theoretical Memory Usage**:
-   $$ \text{Memory}_{\text{max}} = 3M + C. $$
-   For $M = 64 \, \text{KB}$ and small $C$, this results in usage around a few hundred KB.
+   - Formula: `Memory_max = 3M + C`, where `M` is the chunk size (64 KB), and `C` is a small constant for overhead.
+   - For 64 KB chunks, theoretical memory usage is approximately 200 KB.
 
 2. **Practical Memory Usage**:
-   - Additional system buffers and PHP's memory management increase $C$.
-   - The profiler shows 4 MB, which still satisfies the 8 MB limit.
+   - Due to additional allocations, peak memory usage may reach up to 4 MB during file processing.
 
 3. **Controlled Memory Usage**:
-   Thanks to chunk-based processing, memory usage is independent of the input file size $N$ and remains well below the 8 MB limit.
+   - By processing files in chunks and offloading large files to a C++ program, memory usage is kept well below the 8 MB threshold.
 
+---
+
+### Conclusion
+This hybrid approach combines the flexibility of PHP for small files with the performance of C++ for large files, ensuring efficient processing while maintaining low memory usage. Although the number of I/O operations increases, the trade-off is acceptable given the significant reduction in cumulative memory requirements.
+
+### Peak Memory Usage Visualization
+The following chart illustrates the memory usage during processing:
+
+![Large Files FFT Peak Memory](large_files_fft_peack_memory.png)
 ---
 
 # Q1.3. Interpretation of Fourier Transform Results

@@ -52,11 +52,12 @@ LIMIT 10;
 ```
 
 ### Example Output:
+```bash
 user_id activity_count
 567890  1
 123456  1
 345123  1
-
+```
 
 ---
 
@@ -76,7 +77,7 @@ INNER JOIN (
     GROUP BY user_id
 ) ua2 ON ua1.user_id = ua2.user_id AND ua1.ts = ua2.latest_ts;
 
-```
+```bash
 
 ### Example Output:
 user_id download_id     ts                      rev     source_app      server
