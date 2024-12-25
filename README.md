@@ -73,5 +73,5 @@ This issue involves working with a provided CSV dataset to create a MySQL databa
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/SaintAngeLs/php_wobble_fump.git
    cd php_wobble_fump
