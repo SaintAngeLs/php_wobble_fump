@@ -49,3 +49,8 @@ services:
         arguments:
             - '@App\Application\Services\File\FileService'
             - '@App\Application\Services\File\FileRequestValidator\FileRequestValidator'
+        
+    App\Infrastructure\ExternalProcessMemoryCollector\ExternalProcessMemoryCollector:
+        arguments: []
+        tags:
+            - { name: 'data_collector', id: 'external_process_memory', template: '@WebProfiler/Collector/memory.html.twig', priority: 250 }

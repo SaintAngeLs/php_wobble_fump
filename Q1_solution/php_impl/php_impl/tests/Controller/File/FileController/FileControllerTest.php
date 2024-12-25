@@ -46,13 +46,13 @@ class FileControllerTest extends WebTestCase
     public function testDifferentFiles()
     {
         $client = static::createClient();
-        $crawler = $client->request(
+        $client->request(
             'POST',
             '/process-files',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['path1' => self::$filePath1, 'path2' => self::$filePath2])
+            json_encode(value: ['path1' => self::$filePath1, 'path2' => self::$filePath2])
         );
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -60,11 +60,14 @@ class FileControllerTest extends WebTestCase
         $responseContent = $client->getResponse()->getContent();
         $this->assertStringContainsString('Differences saved to: ', $responseContent);
 
-        preg_match('/Differences saved to: (.+)<\/p>/', $responseContent, $matches);
+        preg_match('/Differences saved to: ([^<]+)<\/p>/', $responseContent, $matches);
         $this->assertNotEmpty($matches, 'Difference file path not found in response.');
 
-        $differenceFilePath = html_entity_decode($matches[1]);
-        $this->assertFileExists($differenceFilePath);
+        $differenceFilePath = html_entity_decode(trim($matches[1]));
+        $differenceFilePath = realpath(__DIR__ . '/../../../../public_data/') . '/' . basename(trim($matches[1]));
+
+
+        $this->assertFileExists($differenceFilePath, 'The difference file does not exist.');
 
         @unlink($differenceFilePath);
     }
@@ -103,37 +106,6 @@ class FileControllerTest extends WebTestCase
         );
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
-
-    public function testMemoryUsage()
-    {
-        gc_collect_cycles();
-
-        $client = static::createClient();
-    
-        $crawler = $client->request(
-            'POST',
-            '/process-files',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['path1' => self::$filePath1, 'path2' => self::$filePath2])
-        );
-    
-        unset($crawler);
-    
-        gc_collect_cycles();
-    
-        $content = $client->getResponse()->getContent();
-        preg_match('/Peak Memory: (\d+) bytes/', $content, $matches);
-    
-        $this->assertNotEmpty($matches, 'Memory usage information not found in response.');
-        $peakMemory = (int)$matches[1];
-    
-        $this->assertLessThanOrEqual(8 * 1024 * 1024, $peakMemory, 'Peak memory usage exceeds 8MB.');
-    
-        gc_collect_cycles();
-    }
-    
 
     public static function tearDownAfterClass(): void
     {

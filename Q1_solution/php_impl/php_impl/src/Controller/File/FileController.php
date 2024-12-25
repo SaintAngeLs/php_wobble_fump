@@ -6,6 +6,7 @@ use App\Application\Services\File\FileService;
 use App\Application\Services\File\FileRequestValidator\FileRequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FileController
@@ -51,6 +52,11 @@ class FileController
                 . '<p>Peak Memory: ' . $peakMemory . ' bytes</p>'
                 . '</body></html>',
                 Response::HTTP_OK
+            );
+        } catch (BadRequestHttpException $e) {
+            return new Response(
+                '<html><body><p>Bad Request: ' . htmlspecialchars($e->getMessage()) . '</p></body></html>',
+                Response::HTTP_BAD_REQUEST
             );
         } catch (\Exception $e) {
             return new Response(

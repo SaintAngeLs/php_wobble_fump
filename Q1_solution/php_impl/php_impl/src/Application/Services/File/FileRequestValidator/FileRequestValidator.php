@@ -9,7 +9,6 @@ class FileRequestValidator
 {
     public function validateFilePaths(Request $request): array
     {
-        // Decode JSON payload
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data)) {

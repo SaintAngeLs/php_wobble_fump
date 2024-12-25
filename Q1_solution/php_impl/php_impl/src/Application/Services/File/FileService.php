@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Exception\RuntimeException;
 class FileService
 {
     private $fileReader;
-    private const SIZE_THRESHOLD = 50 * 1024 * 1024; // 50MB
+    private const SIZE_THRESHOLD = 50 * 1024 * 1024; 
 
     public function __construct(FileReaderInterface $fileReader)
     {
@@ -20,7 +20,6 @@ class FileService
     {
         ini_set('max_execution_time', '18000');
 
-        // Check file sizes
         $size1 = filesize($path1);
         $size2 = filesize($path2);
 
@@ -33,7 +32,7 @@ class FileService
 
     private function processSmallFiles(string $path1, string $path2): string
     {
-        $chunkSize = 512 * 1024; // 512KB chunk size
+        $chunkSize = 64 * 1024;
         $publicPath = $_SERVER['DOCUMENT_ROOT'] . 'public_data/';
 
         if (!file_exists($publicPath)) {
