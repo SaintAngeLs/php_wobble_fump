@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdexcept>
 
+// Function to validate and normalize input data
 void validate_and_normalize_input(std::vector<double>& data, size_t elements_read) {
     double max_value = 0.0;
 
@@ -22,6 +23,7 @@ void validate_and_normalize_input(std::vector<double>& data, size_t elements_rea
     }
 }
 
+// Function to perform FFT on a single chunk
 void perform_fft_on_chunk(const std::vector<double>& data, size_t elements_read, std::ofstream& output_file) {
     size_t n = elements_read;
     std::vector<fftw_complex> fft_out(n / 2 + 1);
@@ -35,7 +37,8 @@ void perform_fft_on_chunk(const std::vector<double>& data, size_t elements_read,
     }
 }
 
-void perform_fft(const std::string& input_file_path, const std::string& output_file_path, size_t chunk_size = 512 * 1024) {
+// Function to perform FFT on the input file
+void perform_fft(const std::string& input_file_path, const std::string& output_file_path, size_t chunk_size = 64 * 1024) {
     std::ifstream input_file(input_file_path, std::ios::binary);
     if (!input_file.is_open()) {
         throw std::runtime_error("Failed to open input file: " + input_file_path);
@@ -74,7 +77,7 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        size_t chunk_size = 512 * 1024; 
+        size_t chunk_size = 64 * 1024; // Default to 64 KB
         if (argc >= 4) {
             chunk_size = std::stoul(argv[3]) * 1024;
         }

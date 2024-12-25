@@ -4,9 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-void processLargeFiles(const std::string& path1, const std::string& path2, const std::string& outputPath) {
-    const size_t CHUNK_SIZE = 512 * 1024; // 512KB chunk size
-
+void processLargeFiles(const std::string& path1, const std::string& path2, const std::string& outputPath, size_t chunkSize = 64 * 1024) {
     std::ifstream file1(path1, std::ios::binary);
     std::ifstream file2(path2, std::ios::binary);
     std::ofstream outputFile(outputPath, std::ios::binary);
@@ -21,13 +19,13 @@ void processLargeFiles(const std::string& path1, const std::string& path2, const
         throw std::runtime_error("Failed to open output file: " + outputPath);
     }
 
-    char buffer1[CHUNK_SIZE];
-    char buffer2[CHUNK_SIZE];
-    char xorBuffer[CHUNK_SIZE];
+    std::vector<char> buffer1(chunkSize);
+    std::vector<char> buffer2(chunkSize);
+    std::vector<char> xorBuffer(chunkSize);
 
     while (!file1.eof() || !file2.eof()) {
-        file1.read(buffer1, CHUNK_SIZE);
-        file2.read(buffer2, CHUNK_SIZE);
+        file1.read(buffer1.data(), chunkSize);
+        file2.read(buffer2.data(), chunkSize);
 
         std::streamsize bytesRead1 = file1.gcount();
         std::streamsize bytesRead2 = file2.gcount();
@@ -40,7 +38,7 @@ void processLargeFiles(const std::string& path1, const std::string& path2, const
             xorBuffer[i] = byte1 ^ byte2;
         }
 
-        outputFile.write(xorBuffer, maxBytes);
+        outputFile.write(xorBuffer.data(), maxBytes);
     }
 
     file1.close();
@@ -50,12 +48,16 @@ void processLargeFiles(const std::string& path1, const std::string& path2, const
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        std::cerr << "Usage: " << argv[0] << " <file1> <file2> <outputFile>\n";
+        std::cerr << "Usage: " << argv[0] << " <file1> <file2> <outputFile> [chunkSizeKB]\n";
         return EXIT_FAILURE;
     }
 
     try {
-        processLargeFiles(argv[1], argv[2], argv[3]);
+        size_t chunkSize = 64 * 1024; 
+        if (argc >= 5) {
+            chunkSize = std::stoul(argv[4]) * 1024;
+        }
+        processLargeFiles(argv[1], argv[2], argv[3], chunkSize);
     } catch (const std::exception& ex) {
         std::cerr << "Error: " << ex.what() << "\n";
         return EXIT_FAILURE;
