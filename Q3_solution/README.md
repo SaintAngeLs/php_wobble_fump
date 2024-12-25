@@ -88,7 +88,7 @@ user_id download_id     ts                      rev     source_app      server
 567890  43726887        2024-09-18 12:12:56     1       app1    user@host1
 987123  74415349        2023-01-15 23:02:09     0       app1    user@host3
 987333  282099767       2024-04-19 07:20:16     0       app3    user@host2
-
+```
 ---
 
 ## Steps to Run the Solution
