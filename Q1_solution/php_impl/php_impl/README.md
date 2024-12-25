@@ -1,3 +1,114 @@
+# Q1. Symfony File Comparison and Fourier Analysis Project
+
+---
+
+## Project Overview
+
+This project provides a Symfony-based implementation for:
+1. Calculating the binary difference between two large files in a memory-efficient manner.
+2. Performing a Fourier Transform on the resulting difference file to analyze its frequency components.
+
+The project uses chunk-based processing to ensure that memory usage stays below 8 MB, even for input files as large as 7 GB.
+
+---
+
+## Getting Started
+
+### Prerequisites
+1. **PHP**: Make sure you have PHP 8.2 installed 
+2. **Composer**: Install Composer for dependency management.
+3. **Symfony CLI**: Install Symfony 7.2 CLI to manage the Symfony server.
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SaintAngeLs/php_wobble_fump.git
+   cd php_wobble_fump
+   ```
+
+2. Install dependencies:
+   ```bash
+   composer install
+   ```
+
+3. Set up environment variables:
+   Copy `.env.example` to `.env` and configure it as needed for your environment:
+   ```bash
+   cp .env.example .env
+   ```
+
+---
+
+## Running the Symfony Project
+
+### Start the Symfony Server
+Start the Symfony development server:
+```bash
+symfony server:start
+```
+
+The server will be available at `http://127.0.0.1:8000`.
+
+---
+
+## Running Tests
+
+You can run the tests using the PHPUnit framework:
+
+1. Directly with PHPUnit:
+   ```bash
+   php bin/phpunit
+   ```
+
+---
+
+## Using the Profiler
+
+### Access the Profiler
+The Symfony Profiler provides insights into performance metrics and memory usage.
+
+1. Enable the Symfony Profiler by ensuring `APP_ENV` is set to `dev` in your `.env` file:
+   ```
+   APP_ENV=dev
+   ```
+
+2. After running a request, open the profiler by navigating to `/_profiler` in your browser:
+   ```
+   http://127.0.0.1:8000/_profiler
+   ```
+
+### Interpreting the Profiler
+- **Execution Time**: View the time taken by each request.
+- **Memory Usage**: Confirm that memory usage stays within the 8 MB limit.
+- **Logs**: Review application and test logs for debugging.
+
+---
+
+## Running File Comparison and Fourier Transform
+
+### Execute CURL Command
+Use the Symfony command to execute a CURL request with specified file paths:
+```bash
+php bin/console app:execute-curl <path1> <path2>
+```
+
+Example:
+```bash
+php bin/console app:execute-curl \
+    /home/.../sd_xl_base_1.0_0.9vae.safetensors \
+    /home/.../sd_xl_base_1.0.safetensors
+```
+
+This command sends a POST request to the `/process-files-fourier` endpoint with the provided paths and processes the files. You may also run the request with the `curl` directly or http client.
+
+---
+
+
+### Contact
+
+For any issues or further inquiries, please contact the repository maintainer.
+
+
 # Q1.2. Memory Limitation in Chunk-Based Processing
 
 ### Problem:
