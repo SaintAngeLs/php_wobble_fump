@@ -104,7 +104,7 @@ make clean
 ```
 
 Ensure `libfftw3-dev` is installed before compiling the programs.
-```
+
 
 ## Running the Symfony Project
 
@@ -185,9 +185,9 @@ We process files $A$ and $B$ of size $N$ in chunks of size $M$, where $M \ll N$.
 
 ### Formulation as a Summation:
 We process $k$ chunks, where:
-$$
+```math
 k = \lceil N / M \rceil
-$$
+```
 
 In each step:
 1. Load a chunk of size $M$ from files $A$ and $B$.
@@ -195,46 +195,46 @@ In each step:
 3. Write the result to the output buffer.
 
 The memory usage at any given time can be expressed as:
-$$
+```math
 \text{Memory}(t) = \underbrace{M}_{\text{chunk A}} + \underbrace{M}_{\text{chunk B}} + \underbrace{M}_{\text{output buffer}} + \underbrace{C}_{\text{constant auxiliary memory}},
-$$
+```
 where $C$ is a small constant accounting for local variables.
 
 ---
 
 ### Total Memory Usage:
 The memory usage for each chunk (each step $i$) is the same:
-$$
+```math
 \text{Memory}(i) = 3M + C
-$$
+```
 
 The total memory usage across all chunks is:
-$$
+```math
 \text{Memory}_{\text{total}} = \sum_{i=1}^k (3M + C).
-$$
+```
 
 However, what interests us is the maximum memory usage, which is limited by a single step $i$:
-$$
+```math
 \text{Memory}_{\text{max}} = 3M + C.
-$$
+```
 
 ---
 
 ### Example Calculations:
 For a file of size $N = 7 \, \text{GB}$ and a chunk size of $M = 64 \, \text{KB}$:
-$$
+```math
 k = \lceil 7 \, \text{GB} / 64 \, \text{KB} \rceil = \lceil 7 \times 1024^2 / 64 \rceil = 114,688.
-$$
+```
 
 Maximum memory usage:
-$$
+```math
 \text{Memory}_{\text{max}} = 3 \cdot 64 \, \text{KB} + C \approx 192 \, \text{KB} + C.
-$$
+```
 
 The constant $C$ is negligible, e.g., $C \approx 10 \, \text{KB}$, so the maximum memory is:
-$$
+```math
 \text{Memory}_{\text{max}} \approx 202 \, \text{KB}.
-$$
+```
 
 ---
 
