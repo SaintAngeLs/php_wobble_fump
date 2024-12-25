@@ -10,6 +10,17 @@ This project provides a Symfony-based implementation for:
 
 The project uses chunk-based processing to ensure that memory usage stays below 8 MB, even for input files as large as 7 GB.
 
+### Important Note
+
+This project serves as an **example implementation** showcasing a potential solution for memory-efficient file processing and Fourier Transform operations. While functional, it is not intended for production use in high-traffic environments. 
+
+Further development is required to:
+- Implement **asynchronous communication** for task processing.
+- Ensure **high-traffic persistence** and scalability under heavy loads.
+- Optimize error handling and retry mechanisms for robust operation.
+
+The primary purpose of this program is to demonstrate how memory-efficient file processing can be achieved using chunk-based processing and offloading heavy computations to C++ programs.
+
 ---
 
 ## Getting Started
@@ -49,6 +60,11 @@ The project uses chunk-based processing to ensure that memory usage stays below 
 The Fourier Transform calculation in this project leverages a C++ implementation 
 due to the lack of a robust and memory-efficient Fourier Transform library in PHP. 
 This solution ensures optimal performance and scalability, particularly for large data files, by using the `libfftw3` library in the C++ programs.
+
+The required C++ programs (`file_diff` and `fftlib`) have already been compiled, and their binary files are included in the project. 
+The PHP application directly utilizes these binaries for processing.
+
+---
 
 
 #### File Difference (`file_diff`)
